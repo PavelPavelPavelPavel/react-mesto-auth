@@ -4,14 +4,18 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { Routes, Route, useNavigate, Link } from "react-router-dom";
 import PopupEditAvatar from "./PopupEditAvatar";
 import PopupConfirmDeleteCard from "./PopupConfirmDeleteCard";
 import AddPlacePopup from "./AddPlacePopup";
 import PopupEditProfile from "./PopupEditProfile";
 import ImagePopup from "./ImagePopup";
+import Login from "./Login";
+import Register from "./Register";
 import api from "../utils/Api";
 
 function App() {
+  const navigate = useNavigate();
   const [cardId, setCardId] = useState("");
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
@@ -157,16 +161,28 @@ function App() {
           <div className="main">
             <div className="page">
               <Header />
-              <Main
-                onAddPlace={setIsAddPlacePopupOpen}
-                onEditAvatar={setIsEditAvatarPopupOpen}
-                onEditProfile={setIsEditProfilePopupOpen}
-                onCardLike={handleCardLike}
-                onCardDisLike={handleCardDislike}
-                cards={cards}
-                onConfirmPopup={handleConfirmDeletePopupOpen}
-              />
-              <Footer />
+              <Routes>
+                <Route path="/sign-up" element={<Login />} />
+                <Route path="/sign-in" element={<Register />} />
+                <Route
+                  path="/"
+                  element={
+                    <>
+                      <Main
+                        onAddPlace={setIsAddPlacePopupOpen}
+                        onEditAvatar={setIsEditAvatarPopupOpen}
+                        onEditProfile={setIsEditProfilePopupOpen}
+                        onCardLike={handleCardLike}
+                        onCardDisLike={handleCardDislike}
+                        cards={cards}
+                        onConfirmPopup={handleConfirmDeletePopupOpen}
+                      />
+                      <Footer />
+                    </>
+                  }
+                />
+                {/* <Route path="/" element={<Footer />} /> */}
+              </Routes>
             </div>
           </div>
           <PopupEditAvatar
