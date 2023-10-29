@@ -181,7 +181,7 @@ function App() {
                     </>
                   }
                 />
-                {/* <Route path="/" element={<Footer />} /> */}
+                {/* <Route path="*" element={<Error/>} />  */}
               </Routes>
             </div>
           </div>

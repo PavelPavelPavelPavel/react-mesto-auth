@@ -36,7 +36,7 @@ function PopupWithForm({
               {children}
               <button
                 type="submit"
-                className={`popup__button popup__button-${name}`}
+                className={`popup__button popup__button-${name} popup__button_theme_light` }
               >
                 {isLoadBtn || buttonText || "Сохранить"}
               </button>
