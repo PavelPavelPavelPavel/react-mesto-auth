@@ -4,11 +4,12 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import { Routes, Route, useNavigate, Link } from "react-router-dom";
+import { Router, Routes, Route, useNavigate, Link } from "react-router-dom";
 import PopupEditAvatar from "./PopupEditAvatar";
 import PopupConfirmDeleteCard from "./PopupConfirmDeleteCard";
 import AddPlacePopup from "./AddPlacePopup";
 import PopupEditProfile from "./PopupEditProfile";
+import InfoTooltip from "./InfoTooltip";
 import ImagePopup from "./ImagePopup";
 import Login from "./Login";
 import Register from "./Register";
@@ -160,8 +161,9 @@ function App() {
         <div className="App">
           <div className="main">
             <div className="page">
-              <Header />
+            <Header />
               <Routes>
+              
                 <Route path="/sign-up" element={<Login />} />
                 <Route path="/sign-in" element={<Register />} />
                 <Route
@@ -211,6 +213,7 @@ function App() {
             isLoadBtn={btnTextLoad}
           />
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+          <InfoTooltip />
         </div>
       </CurrentUserContext.Provider>
     </>

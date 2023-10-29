@@ -15,7 +15,7 @@ function PageWithEntrance ({title, children, buttonText, linkTo, capchaBtntext})
                   >
                     {buttonText}
                   </button>
-                  <Link to={linkTo} className="popup__button-return">{capchaBtntext}</Link>
+                  <Link to={linkTo} className="button-return button-return_place_popup">{capchaBtntext}</Link>
             </form>
             
             </>
