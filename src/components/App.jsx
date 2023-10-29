@@ -7,6 +7,7 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { Router, Routes, Route, useNavigate, Link } from "react-router-dom";
 import PopupEditAvatar from "./PopupEditAvatar";
 import PopupConfirmDeleteCard from "./PopupConfirmDeleteCard";
+import ProtectedRoute from "./ProtectedRoute";
 import AddPlacePopup from "./AddPlacePopup";
 import PopupEditProfile from "./PopupEditProfile";
 import InfoTooltip from "./InfoTooltip";
@@ -14,6 +15,7 @@ import ImagePopup from "./ImagePopup";
 import Login from "./Login";
 import Register from "./Register";
 import api from "../utils/Api";
+import auth from "../utils/Auth";
 
 function App() {
   const navigate = useNavigate();
@@ -31,7 +33,10 @@ function App() {
   const [currentUser, setCurrentUser] = useState({ name: "", about: "" });
   const [cards, setCards] = useState([]);
   const [btnTextLoad, setBtnTextLoad] = useState("");
-  useEffect(() => {
+  const [signIn, setSignIn] = useState(false);
+
+
+  useEffect(() => { 
     Promise.all([api.getInfo(), api.getInfoCards()])
       .then(([res, card]) => {
         setCurrentUser(res);
@@ -148,6 +153,9 @@ function App() {
     setIsConfirmDeleteCardPopupOpen(true);
     setCardId(id);
   }
+
+  // auth.getInfo('asdfkjkasdjflka')
+  // .then(res => console.log(res))
 
   return (
     <>
