@@ -2,7 +2,7 @@ class Auth {
     constructor() {
         this._mainUrl = 'https://auth.nomoreparties.co';
       }
-
+      
       _sendRequest(url, options) {
         return fetch(url, options).then((response) => {
           if (response.ok) {

@@ -4,7 +4,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import { Router, Routes, Route, useNavigate, Link } from "react-router-dom";
+import {  Routes, Route, useNavigate, Link , Navigate, useLocation, Outlet} from "react-router-dom";
 import PopupEditAvatar from "./PopupEditAvatar";
 import PopupConfirmDeleteCard from "./PopupConfirmDeleteCard";
 import ProtectedRoute from "./ProtectedRoute";
@@ -18,7 +18,6 @@ import api from "../utils/Api";
 import auth from "../utils/Auth";
 
 function App() {
-  const navigate = useNavigate();
   const [cardId, setCardId] = useState("");
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
@@ -30,10 +29,17 @@ function App() {
     name: " ",
     link: " ",
   });
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [linkText, setLinkText] = useState('');
+  const [toLink, setTolink] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+
   const [currentUser, setCurrentUser] = useState({ name: "", about: "" });
   const [cards, setCards] = useState([]);
   const [btnTextLoad, setBtnTextLoad] = useState("");
-  const [signIn, setSignIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true);
+
 
 
   useEffect(() => { 
@@ -43,7 +49,24 @@ function App() {
         setCards(card);
       })
       .catch((err) => console.log(err));
+      setLoggedIn(false);
+      loggedIn ? navigate('/') : navigate("/sign-in")
   }, []);
+
+  useEffect(() => {
+    let pathName = location.pathname;
+    if(pathName === '/sign-in') {
+      setTolink('/sign-up');
+      setLinkText('Регистрация');
+    } else  if(pathName === '/sign-up') {
+      setTolink('/sign-in');
+      setLinkText('Вход');
+    } else  if(pathName === '/') {
+      setTolink('/sign-in');
+      setLinkText('Выйти');
+      setUserEmail('')
+    } 
+  }, [location.pathname])
 
   function handleUpdateUser({ name, about }) {
     setBtnTextLoad("Сохранение...");
@@ -154,6 +177,17 @@ function App() {
     setCardId(id);
   }
 
+  function handleSignUp({email, password}) {  //регистрация
+      auth.authentication({password, email})
+      .then(res => {
+        console.log(res)
+      })
+  }
+
+  function handleSignIn({email, password}) { //Вход
+   
+  }
+
   // auth.getInfo('asdfkjkasdjflka')
   // .then(res => console.log(res))
 
@@ -169,16 +203,14 @@ function App() {
         <div className="App">
           <div className="main">
             <div className="page">
-            <Header />
+            <Header 
+              linkText={linkText} 
+              toLink={toLink} 
+              userEmail={userEmail}/>
               <Routes>
-              
-                <Route path="/sign-up" element={<Login />} />
-                <Route path="/sign-in" element={<Register />} />
-                <Route
-                  path="/"
-                  element={
-                    <>
-                      <Main
+                <Route path='/' element={
+                  <ProtectedRoute loggedIn={loggedIn}>
+                        <Main
                         onAddPlace={setIsAddPlacePopupOpen}
                         onEditAvatar={setIsEditAvatarPopupOpen}
                         onEditProfile={setIsEditProfilePopupOpen}
@@ -187,11 +219,11 @@ function App() {
                         cards={cards}
                         onConfirmPopup={handleConfirmDeletePopupOpen}
                       />
-                      <Footer />
-                    </>
-                  }
-                />
-                {/* <Route path="*" element={<Error/>} />  */}
+                    <Footer />
+                  </ProtectedRoute>
+              }/>
+                <Route path="/sign-in" element={<Login onUserLogin={handleSignIn}/>} />
+                <Route path="/sign-up" element={<Register onUserSubmit={handleSignUp}/>} />
               </Routes>
             </div>
           </div>
