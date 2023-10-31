@@ -1,19 +1,18 @@
 import {useState} from 'react';
 import PageWithEntrance from "./PageWithEntrance";
-import{useLocation} from 'react-router-dom'
 
 
 function Login({onUserLogin}) {
   const [logEmail, setLogEmail] = useState('');
   const [logPass, setLogPass] = useState('');
-  const location = useLocation(); 
+  
 
   function handleLogin() {
     onUserLogin({
       email: logEmail, 
-      password: logPass});
-    //console.log(location.pathname)
-    
+      password: logPass})
+      setLogEmail("");
+      setLogPass("");
   }
   return (
     <PageWithEntrance 
@@ -39,7 +38,7 @@ function Login({onUserLogin}) {
         id="input-LogPassword"
         value={logPass}
         onChange={(e) => setLogPass(e.target.value)}
-        type="text"
+        type="password"
         name="logpassword"
         required
         className="popup__value popup__value_type_sign"

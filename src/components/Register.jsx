@@ -9,15 +9,9 @@ function Register({onUserSubmit}) {
  
   function handleRegister() {
     onUserSubmit({
-      email: regEmail, 
-      password: regPass
+      password: regPass,
+      email: regEmail
     })
-
-    // handleSubmit({
-    //     email: regEmail, 
-    //     password: regPass})
-    // onUserSubmit(test);
-     //console.log(location.pathname);
   }
   
   return (
@@ -44,7 +38,7 @@ function Register({onUserSubmit}) {
         id="input-regPassword"
         value={regPass}
         onChange={(e) => setRegPass(e.target.value)}
-        type="text"
+        type="password"
         name="regpassword"
         required
         className="popup__value popup__value_type_sign"

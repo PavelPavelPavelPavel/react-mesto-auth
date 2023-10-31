@@ -16,29 +16,39 @@ import Login from "./Login";
 import Register from "./Register";
 import api from "../utils/Api";
 import auth from "../utils/Auth";
+import success from "../images/success.svg";
+import reject from "../images/reject.svg";
 
 function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [cardId, setCardId] = useState("");
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isConfirmDeleteCardPopupOpen, setIsConfirmDeleteCardPopupOpen] =
     useState(false);
+  const [isInfoTooltip, setIsInfoTooltip] = useState(false, '');
   const [selectedCard, setSelectedCard] = useState({
     state: false,
     name: " ",
     link: " ",
   });
-  const location = useLocation();
-  const navigate = useNavigate();
   const [linkText, setLinkText] = useState('');
   const [toLink, setTolink] = useState('');
-  const [userEmail, setUserEmail] = useState('');
-
   const [currentUser, setCurrentUser] = useState({ name: "", about: "" });
   const [cards, setCards] = useState([]);
   const [btnTextLoad, setBtnTextLoad] = useState("");
   const [loggedIn, setLoggedIn] = useState(true);
+  const [token, setToken] = useState('');
+  const [infoTextTooltip, setInfoTextTooltip] = useState('');
+  const [infoImgTooltip, setInfoImgTooltip] = useState();
+  const [roadAfterClose, setRoadAfterClose] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+  // const [userPassword, setUserPassword] = useState('');
+  const [userId, setUserId] = useState('');
+  console.log(token)
+
 
 
 
@@ -49,8 +59,15 @@ function App() {
         setCards(card);
       })
       .catch((err) => console.log(err));
-      setLoggedIn(false);
-      loggedIn ? navigate('/') : navigate("/sign-in")
+      const jwt =  localStorage.getItem('jwt');
+      setToken(jwt);
+      if (jwt) {
+        auth.getInfo(jwt)
+        .then(res => {
+         res.data._id  ? navigate('/') : navigate('/sign-in');
+        })
+      }
+       // loggedIn ? navigate('/') : navigate("/sign-in")
   }, []);
 
   useEffect(() => {
@@ -64,7 +81,7 @@ function App() {
     } else  if(pathName === '/') {
       setTolink('/sign-in');
       setLinkText('Выйти');
-      setUserEmail('')
+      setUserEmail('');
     } 
   }, [location.pathname])
 
@@ -166,6 +183,7 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsConfirmDeleteCardPopupOpen(false);
+    setIsInfoTooltip(false);
     setSelectedCard({
       state: false,
       name: " ",
@@ -178,18 +196,39 @@ function App() {
   }
 
   function handleSignUp({email, password}) {  //регистрация
-      auth.authentication({password, email})
-      .then(res => {
+      auth.authentication(email, password)
+      .then((res) => {
         console.log(res)
+          setUserId(res.data._id)
+          setIsInfoTooltip(true);
+          setInfoImgTooltip(success);
+          setInfoTextTooltip('Вы успешно зарегистрировались!');
+          setRoadAfterClose(true);
       })
+      .catch(() =>  {
+        setIsInfoTooltip(true);
+        setInfoImgTooltip(reject);
+        setInfoTextTooltip("Что-то пошло не так! Попробуйте ещё раз.")
+        setRoadAfterClose(false);
+      }
+        )
   }
 
   function handleSignIn({email, password}) { //Вход
-   
+    auth.authorization(password, email)
+    .then(res=> { 
+      localStorage.setItem('jwt', res.token);
+      setLoggedIn(true);
+      navigate('/');
+    })
+    .catch(() => {
+        setIsInfoTooltip(true);
+        setInfoImgTooltip(reject);
+        setInfoTextTooltip("Что-то пошло не так! Попробуйте ещё раз.")
+    })
   }
 
-  // auth.getInfo('asdfkjkasdjflka')
-  // .then(res => console.log(res))
+  
 
   return (
     <>
@@ -206,7 +245,9 @@ function App() {
             <Header 
               linkText={linkText} 
               toLink={toLink} 
-              userEmail={userEmail}/>
+              userEmail={userEmail}
+              loggedIn={loggedIn}
+              />
               <Routes>
                 <Route path='/' element={
                   <ProtectedRoute loggedIn={loggedIn}>
@@ -253,7 +294,12 @@ function App() {
             isLoadBtn={btnTextLoad}
           />
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-          <InfoTooltip />
+          <InfoTooltip isOpen={isInfoTooltip} 
+          text={infoTextTooltip}
+          img={infoImgTooltip}
+          onClose={closeAllPopups}
+          roadAfterCloseState={roadAfterClose}
+          />
         </div>
       </CurrentUserContext.Provider>
     </>

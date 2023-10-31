@@ -1,6 +1,6 @@
 class Auth {
-    constructor() {
-        this._mainUrl = 'https://auth.nomoreparties.co';
+    constructor(mainUrl) {
+        this._mainUrl = mainUrl;
       }
       
       _sendRequest(url, options) {
@@ -12,15 +12,16 @@ class Auth {
         });
       }
 
-authentication(password, email) {
+authentication(email, password) {
       return this._sendRequest(`${this._mainUrl}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({password, email})
+        body: JSON.stringify({email, password})
       });
 }
+
 
 authorization(password, email) {
     return this._sendRequest(`${this._mainUrl}/signin`, {
@@ -43,6 +44,6 @@ getInfo(jwt) {
 
 }
 
-const auth = new Auth();
+const auth = new Auth('https://auth.nomoreparties.co');
 
 export default auth;

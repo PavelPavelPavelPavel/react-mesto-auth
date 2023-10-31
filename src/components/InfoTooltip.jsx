@@ -1,12 +1,12 @@
-import { useState } from "react";
-import success from "../images/success.svg";
-import reject from "../images/reject.svg";
+import { useNavigate } from "react-router-dom";
 
-function InfoTooltip() {
-const [isOpen, setIsOpen] = useState(false);
-const successText = 'Вы успешно зарегистрировались!';
-const rejectText = "Что-то пошло не так! Попробуйте ещё раз.";
-    
+function InfoTooltip({isOpen, img, text, onClose, roadAfterCloseState}) {
+const navigate = useNavigate();
+
+function handleClose() {
+  onClose();
+  roadAfterCloseState ? navigate('sign-in') : navigate('sign-up');
+}
     
 return(
     <>
@@ -19,14 +19,14 @@ return(
             aria-label="Кнопка закрытия попапа"
             type="button"
             className="popup__button-close"
-            // onClick={onClose}
+            onClick={handleClose}
           ></button>
           <div className={`popup__form`}>
             <form
               className="popup__input-wrapper popup__input-profile"
             >
-                <img className="popup__sign" src={reject}  alt=""/>
-                <p className="popup__sign-text">{rejectText}</p>
+                <img className="popup__sign" src={img}  alt="знак"/>
+                <p className="popup__sign-text">{text}</p>
             </form>
           </div>
         </div>
