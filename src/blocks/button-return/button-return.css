@@ -1,8 +1,10 @@
 .button-return {
+    display: block;
+    margin: 0;
     padding: 0;
     font-family: "Inter", Arial, Helvetica, sans-serif;
     background-color: inherit;
-    color: #ffff;
-    text-decoration: none;
+    color: #fff;
     text-align: center;
+    border: none;
 }

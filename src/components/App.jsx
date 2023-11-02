@@ -46,8 +46,7 @@ function App() {
   const [roadAfterClose, setRoadAfterClose] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   // const [userPassword, setUserPassword] = useState('');
-  const [userId, setUserId] = useState('');
-  console.log(token)
+  
 
 
 
@@ -60,14 +59,19 @@ function App() {
       })
       .catch((err) => console.log(err));
       const jwt =  localStorage.getItem('jwt');
-      setToken(jwt);
-      if (jwt) {
+      console.log(jwt)
+      if(jwt && !null) {
         auth.getInfo(jwt)
         .then(res => {
-         res.data._id  ? navigate('/') : navigate('/sign-in');
+          setUserEmail(res.data.email)
+          setLoggedIn(true);
+          navigate('/');
         })
+      } else {
+          setUserEmail("")
+          setLoggedIn(false);
+          navigate('/sign-in');
       }
-       // loggedIn ? navigate('/') : navigate("/sign-in")
   }, []);
 
   useEffect(() => {
@@ -81,7 +85,6 @@ function App() {
     } else  if(pathName === '/') {
       setTolink('/sign-in');
       setLinkText('Выйти');
-      setUserEmail('');
     } 
   }, [location.pathname])
 
@@ -99,6 +102,8 @@ function App() {
         setBtnTextLoad("");
       });
   }
+
+  
 
   function handleAddPlaceSubmit(newCard, placeRef, linkRef) {
     setBtnTextLoad("Создаём...");
@@ -197,9 +202,7 @@ function App() {
 
   function handleSignUp({email, password}) {  //регистрация
       auth.authentication(email, password)
-      .then((res) => {
-        console.log(res)
-          setUserId(res.data._id)
+      .then(() => {
           setIsInfoTooltip(true);
           setInfoImgTooltip(success);
           setInfoTextTooltip('Вы успешно зарегистрировались!');
@@ -216,7 +219,7 @@ function App() {
 
   function handleSignIn({email, password}) { //Вход
     auth.authorization(password, email)
-    .then(res=> { 
+    .then(res=> {
       localStorage.setItem('jwt', res.token);
       setLoggedIn(true);
       navigate('/');
@@ -226,6 +229,11 @@ function App() {
         setInfoImgTooltip(reject);
         setInfoTextTooltip("Что-то пошло не так! Попробуйте ещё раз.")
     })
+  }
+
+  function handleExitProfile() {
+        localStorage.removeItem('jwt');
+        setLoggedIn(false);
   }
 
   
@@ -247,6 +255,7 @@ function App() {
               toLink={toLink} 
               userEmail={userEmail}
               loggedIn={loggedIn}
+              onExitProfile={handleExitProfile}
               />
               <Routes>
                 <Route path='/' element={
