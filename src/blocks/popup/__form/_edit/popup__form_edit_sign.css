@@ -6,3 +6,9 @@
     justify-content: center;
     background-color: black;
 }
+@media screen and (max-width: 560px) {
+    .popup__form_edit_sign {
+        width: 282px;
+        min-height: 322px; 
+    }
+}
