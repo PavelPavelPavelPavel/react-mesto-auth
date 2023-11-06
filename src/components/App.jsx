@@ -46,25 +46,29 @@ function App() {
 	const [userEmail, setUserEmail] = useState("");
 
 	useEffect(() => {
-		Promise.all([api.getInfo(), api.getInfoCards()])
-			.then(([res, card]) => {
-				setCurrentUser(res);
-				setCards(card);
-			})
-			.catch((err) => console.log(err));
 		const jwt = localStorage.getItem("jwt");
 		if (jwt && !null) {
-			auth.getInfo(jwt).then((res) => {
-				setUserEmail(res.data.email);
-				setLoggedIn(true);
-				navigate("/");
-			});
+			Promise.all([api.getInfo(), api.getInfoCards()])
+				.then(([res, card]) => {
+					setCurrentUser(res);
+					setCards(card);
+				})
+				.catch((err) => console.log(err));
+			//const jwt = localStorage.getItem("jwt");
+			auth
+				.getInfo(jwt)
+				.then((res) => {
+					setUserEmail(res.data.email);
+					setLoggedIn(true);
+					navigate("/");
+				})
+				.catch((err) => console.log(err));
 		} else {
 			setUserEmail("");
 			setLoggedIn(false);
 			navigate("/sign-in");
 		}
-	}, []);
+	}, [loggedIn]);
 
 	useEffect(() => {
 		let pathName = location.pathname;
@@ -191,7 +195,6 @@ function App() {
 	}
 
 	function handleSignUp({ email, password }) {
-		//регистрация
 		auth
 			.authentication(email, password)
 			.then(() => {
@@ -209,7 +212,6 @@ function App() {
 	}
 
 	function handleSignIn({ email, password }) {
-		//Вход
 		auth
 			.authorization(password, email)
 			.then((res) => {
@@ -222,6 +224,7 @@ function App() {
 				setIsInfoTooltip(true);
 				setInfoImgTooltip(reject);
 				setInfoTextTooltip("Что-то пошло не так! Попробуйте ещё раз.");
+				setRoadAfterClose(true);
 			});
 	}
 
