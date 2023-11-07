@@ -57,9 +57,11 @@ function PageWithEntrance({
 					className={`popup__button popup__button_theme_dark`}>
 					{buttonText}
 				</button>
-				<Link to={linkTo} className='button-return button-return_place_popup'>
-					{capchaBtntext}
-				</Link>
+				<button className='button-return'>
+					<Link to={linkTo} className='button-return button-return_place_popup'>
+						{capchaBtntext}
+					</Link>
+				</button>
 			</form>
 		</>
 	);

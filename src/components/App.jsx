@@ -18,10 +18,12 @@ import api from "../utils/Api";
 import auth from "../utils/Auth";
 import success from "../images/success.svg";
 import reject from "../images/reject.svg";
+//import { useResize } from "../utils/ResizeWidth";
 
 function App() {
 	const location = useLocation();
 	const navigate = useNavigate();
+	//const resize = useResize();
 	const [cardId, setCardId] = useState("");
 	const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
 	const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
@@ -44,17 +46,10 @@ function App() {
 	const [infoImgTooltip, setInfoImgTooltip] = useState();
 	const [roadAfterClose, setRoadAfterClose] = useState(false);
 	const [userEmail, setUserEmail] = useState("");
+	const jwt = localStorage.getItem("jwt");
 
 	useEffect(() => {
-		const jwt = localStorage.getItem("jwt");
 		if (jwt && !null) {
-			Promise.all([api.getInfo(), api.getInfoCards()])
-				.then(([res, card]) => {
-					setCurrentUser(res);
-					setCards(card);
-				})
-				.catch((err) => console.log(err));
-			//const jwt = localStorage.getItem("jwt");
 			auth
 				.getInfo(jwt)
 				.then((res) => {
@@ -67,6 +62,17 @@ function App() {
 			setUserEmail("");
 			setLoggedIn(false);
 			navigate("/sign-in");
+		}
+	}, [loggedIn]);
+
+	useEffect(() => {
+		if (jwt && !null) {
+			Promise.all([api.getInfo(), api.getInfoCards()])
+				.then(([res, card]) => {
+					setCurrentUser(res);
+					setCards(card);
+				})
+				.catch((err) => console.log(err));
 		}
 	}, [loggedIn]);
 

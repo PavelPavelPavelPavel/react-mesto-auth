@@ -10,3 +10,15 @@
 	color: #fff;
 	justify-self: start;
 }
+
+@media screen and (max-width: 560px) {
+	.button-return_place_header {
+		max-width: 89px;
+		max-height: 17px;
+		margin: 0 30px auto auto;
+		font-style: normal;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 17px;
+	}
+}
