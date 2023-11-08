@@ -41,14 +41,14 @@ function App() {
 	const [currentUser, setCurrentUser] = useState({ name: "", about: "" });
 	const [cards, setCards] = useState([]);
 	const [btnTextLoad, setBtnTextLoad] = useState("");
-	const [loggedIn, setLoggedIn] = useState(true);
+	const [loggedIn, setLoggedIn] = useState(false);
 	const [infoTextTooltip, setInfoTextTooltip] = useState("");
 	const [infoImgTooltip, setInfoImgTooltip] = useState();
 	const [roadAfterClose, setRoadAfterClose] = useState(false);
 	const [userEmail, setUserEmail] = useState("");
-	const jwt = localStorage.getItem("jwt");
 
 	useEffect(() => {
+		const jwt = localStorage.getItem("jwt");
 		if (jwt && !null) {
 			auth
 				.getInfo(jwt)
@@ -63,10 +63,10 @@ function App() {
 			setLoggedIn(false);
 			navigate("/sign-in");
 		}
-	}, [loggedIn]);
+	}, []);
 
 	useEffect(() => {
-		if (jwt && !null) {
+		if (loggedIn) {
 			Promise.all([api.getInfo(), api.getInfoCards()])
 				.then(([res, card]) => {
 					setCurrentUser(res);
